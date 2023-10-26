@@ -23,12 +23,6 @@ void Menu::Iniciar(){
     Menu::encoder->Iniciar();
     Serial.println("Encoder Iniciado!");
     
-    Menu::sensorAmbiente.Iniciar();
-    Serial.println("SensorAmbiente Iniciado!");
-    
-    //Menu::sensorResistencia.Iniciar();
-    Serial.println("SensorResistencia Removido!");
-
     vTaskDelay(3000 / portTICK_PERIOD_MS);
     Menu::MostrarPaginaActual();
 }
@@ -67,27 +61,58 @@ void Menu::MostrarPaginaActual(){
 }
 
 void Menu::MostrarTemperatura(){
-    static float ultimaTemperatura = 0;
-    Menu::sensorAmbiente.Leer();
+    static float leerSensor = 0;
+    
+    static float ultimaTemperaturaAmbiente = 0;
+    static float ultimaTemperaturaResistencia = 0;
 
-    if(ultimaTemperatura == Menu::sensorAmbiente.Temperatura){
-      return;
+    if(leerSensor == 0){
+      Menu::sensorAmbiente.Habilitar();
+      Menu::sensorResistencia.Desabilitar();
+      leerSensor = 1;
     }
-    ultimaTemperatura = Menu::sensorAmbiente.Temperatura;
+    else{
+      Menu::sensorAmbiente.Desabilitar();
+      Menu::sensorResistencia.Habilitar();
+      leerSensor = 0;
+    }
+    
+    Menu::sensorAmbiente.Leer();
+    Menu::sensorResistencia.Leer();
+
+    if(ultimaTemperaturaAmbiente == Menu::sensorAmbiente.Temperatura){
+      if(ultimaTemperaturaResistencia == Menu::sensorResistencia.Temperatura){
+        return;
+      }
+    }
+
+
+    
+    ultimaTemperaturaAmbiente = Menu::sensorAmbiente.Temperatura;
+    ultimaTemperaturaResistencia = Menu::sensorResistencia.Temperatura;
 
     Menu::display->clearDisplay();
     Menu::display->setTextSize(1);
     Menu::display->setTextColor(SH110X_WHITE);
+    
     Menu::display->setCursor(0,0);
     Menu::display->print("PID Temp Control");
+    
     Menu::display->setCursor(0,10);
     Menu::display->print("Setpoint:");
-    Menu::display->setCursor(60,10);
+    Menu::display->setCursor(80,10);
     Menu::display->print(Menu::controlPID->Setpoint,1);
+    
     Menu::display->setCursor(0,20);
     Menu::display->print("Real:");
-    Menu::display->setCursor(60,20);
+    Menu::display->setCursor(80,20);
     Menu::display->print(Menu::sensorAmbiente.Temperatura,1);
+
+    Menu::display->setCursor(0,30);
+    Menu::display->print("Resistance:");
+    Menu::display->setCursor(80,30);
+    Menu::display->print(Menu::sensorResistencia.Temperatura,1);
+    
     Menu::display->display();
 }
 
