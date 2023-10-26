@@ -95,8 +95,8 @@ void Nucleo1(void *pvParameters) {
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  Serial.println("CODIGO PRUEBA!!! Probando que pasa con la lectura interrumpida cuando se hace delay");
   Serial.println("holaaaa! codigo con encoder, pantalla dos sensores declarados y uno andando, ademas de cambio de pin! Tambien tamanio pila 15k y log de declaraciones e inicios! La inicializacion del sensor resistencia ha sido comentada! Se muestra el estado del giro del encoder! Se aumento delay lectura encoder! Se agrego espacio serial print para ver correctamente!");
+  Serial.println("CODIGO PRUEBA!!! Probando que pasa con la lectura interrumpida cuando se hace delay");
   Serial.println("Falla posiblemente solucionada! La solucion era volver a leer el valor luego del delay");
   Serial.println("Otro fallo posible. Se creo la funcion Reiniciar para el encoder. Es posible que falle la funcion renderizar menus");
   Serial.println("Reinicio del encoder aumentado!");
