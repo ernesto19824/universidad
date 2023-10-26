@@ -12,22 +12,29 @@ volatile Sensor SensorAmbiente(15, MOSI, MISO, SCK);
 volatile Sensor SensorResistencia(17, MOSI, MISO, SCK);
 
 void Nucleo0(void *pvParameters) {
-    (void) pvParameters;
+  (void) pvParameters;
 
-    
-    pinMode(15, OUTPUT);
-    pinMode(17, OUTPUT);
-    digitalWrite(15, HIGH);
-    digitalWrite(17, LOW);
+  
+  pinMode(15, OUTPUT);
+  pinMode(17, OUTPUT);
+  digitalWrite(15, HIGH);
+  digitalWrite(17, LOW);
 
-    SensorAmbiente.Iniciar();
-    SensorResistencia.Iniciar();
-    
-    for (;;) {
-        Serial.print("Ejecutando en el Núcleo 0: ");
-        Serial.println(xPortGetCoreID());
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
-    }
+  SensorAmbiente.Iniciar();
+  SensorResistencia.Iniciar();
+  
+  for (;;) {
+    Serial.print("\n\nEjecutando en el Núcleo 0: ");
+    Serial.println(xPortGetCoreID());
+
+    Serial.print("Temperatura ambiente: ");
+    Serial.println(SensorAmbiente.Temperatura);
+
+    Serial.print("Temperatura resistencia: ");
+    Serial.println(SensorResistencia.Temperatura);
+
+    vTaskDelay(2000 / portTICK_PERIOD_MS);
+  }
 }
 
 void Nucleo1(void *pvParameters) {
@@ -42,7 +49,7 @@ void Nucleo1(void *pvParameters) {
   Serial.println("encoder declarado");
 
   
-  ControlPID controlPID;
+  ControlPID controlPID(34);
   Serial.println("Control pid declarado");
   
   Menu navegacion(&display, &controlPID, &encoder, SensorAmbiente, SensorResistencia);
@@ -106,10 +113,13 @@ void setup() {
   Serial.println("Probando iniciar el otro sensor!!!!! Usando high y low! Pequenio cambio libreria!");
   Serial.println("IMPORTANTE! NO COLOCAR NADA EN CLK! Usando pin 17");
   Serial.println("Cambio para agregar chipselect al sensor!");
-  Serial.println("Cambio para agregar funcion habilitar/deshabilitar al sensor! Se agrego identificador fault!\n\n");
+  Serial.println("Cambio para agregar funcion habilitar/deshabilitar al sensor! Se agrego identificador fault!");
+  Serial.println("Probando porque no andan ambos sensores!");
+  Serial.println("Agregado control PID!");
 
   
 
+  Serial.println("\n\n");
   xTaskCreatePinnedToCore(Nucleo0, "Task0", 1000, NULL, 2, NULL, 0);
 
   vTaskDelay(2000 / portTICK_PERIOD_MS);

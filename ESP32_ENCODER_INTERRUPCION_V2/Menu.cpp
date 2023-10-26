@@ -69,16 +69,16 @@ void Menu::MostrarTemperatura(){
     if(leerSensor == 0){
       Menu::sensorAmbiente.Habilitar();
       Menu::sensorResistencia.Desabilitar();
+      Menu::sensorResistencia.Leer();
       leerSensor = 1;
     }
     else{
       Menu::sensorAmbiente.Desabilitar();
       Menu::sensorResistencia.Habilitar();
+      Menu::sensorAmbiente.Leer();
       leerSensor = 0;
     }
     
-    Menu::sensorAmbiente.Leer();
-    Menu::sensorResistencia.Leer();
 
     if(ultimaTemperaturaAmbiente == Menu::sensorAmbiente.Temperatura){
       if(ultimaTemperaturaResistencia == Menu::sensorResistencia.Temperatura){

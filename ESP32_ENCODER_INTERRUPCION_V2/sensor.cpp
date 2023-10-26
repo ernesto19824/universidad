@@ -13,7 +13,7 @@ void Sensor::Iniciar() volatile{
 }
 
 void Sensor::Leer() volatile{
-    if(digitalRead(chipSelect) == LOW){
+    if(digitalRead(chipSelect) == HIGH){
       return;
     }
     
